@@ -2,10 +2,16 @@
 defmodule System2 do
 def main() do
   IO.puts ["PL broadcast at ", DNS.my_ip_addr()]
-  peer_list = for n <- 0..4, do: spawn(Peer, :start, [n, self()])
+  peer_list = for n <- 0..4, do: spawn(Peer, :start, [n, self(), 1000, 11000])
 
-  receive do
-      {:pl_app, pl, app} ->
+  peer_pl_list = for _ <- peer_list do
+      receive do
+          {:pl, peer, pl} -> {peer, pl}
+      end
+  end
+
+  for {_, pl} <- peer_pl_list do
+      send pl, {:broadcast, peer_pl_list}
   end
 
 end

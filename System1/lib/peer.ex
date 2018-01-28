@@ -12,10 +12,10 @@ end
 defp wait_for_broadcast(num, peers) do
     # List with data about number of broadcasts sent/received per peer
     peer_data = for peer <- peers, do: {peer, {0,0}}
-  receive do
+    receive do
       { :broadcast, max_messages, timeout } ->
           broadcast(peer_data, max_messages, cur_time() + timeout, num)
-  end
+    end
 end
 
 defp broadcast(peer_data, broadcasts_left, end_time, my_num) do
