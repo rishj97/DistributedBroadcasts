@@ -7,20 +7,26 @@ def start(app) do
     receive do
         {:broadcast, pl, peer_pl_list} ->
             send app, {:broadcast, self(), peer_pl_list}
-            start_listening(pl, app, peer_pl_list)
+            start_listening(pl, app, peer_pl_list, [], 0)
     end
 end
 
-defp start_listening(pl, app, peer_pl_list) do
+defp start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no) do
     receive do
         {:beb_broadcast} ->
             for {peer, _} <- peer_pl_list do
-                send pl, {:pl_send, peer}
+                send pl, {:pl_send, peer, cur_seq_no}
             end
-        {:pl_deliver, peer_from} ->
-            send app, {:beb_deliver, peer_from}
+            start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no + 1)
+        {:pl_deliver, peer_from, seq_no} ->
+            cond do
+                Enum.member?(received_msgs, {peer_from, seq_no}) ->
+                    start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no)
+                true ->
+                    send app, {:beb_deliver, peer_from}
+                    start_listening(pl, app, peer_pl_list, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
+            end
     end
-    start_listening(pl, app, peer_pl_list)
 end
 
 end # module -----------------------

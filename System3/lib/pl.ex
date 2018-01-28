@@ -11,11 +11,11 @@ defmodule PL do
 
     defp start_listening(peer, peer_pl_list, beb) do
         receive do
-            {:pl_send, peer_to} ->
+            {:pl_send, peer_to, seq_no} ->
                 {_, pl} = List.keyfind(peer_pl_list, peer_to, 0, nil)
-                send pl, {:broadcast_msg, peer}
-            {:broadcast_msg, peer_from} ->
-                send beb, {:pl_deliver, peer_from}
+                send pl, {:broadcast_msg, peer, seq_no}
+            {:broadcast_msg, peer_from, seq_no} ->
+                send beb, {:pl_deliver, peer_from, seq_no}
         end
         start_listening(peer, peer_pl_list, beb)
     end
