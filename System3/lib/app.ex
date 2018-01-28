@@ -3,35 +3,36 @@ defmodule App do
     def start(my_num, max_messages, timeout) do
         IO.puts ["      App at ", DNS.my_ip_addr()]
         receive do
-            {:broadcast, pl, peer_pl_list} ->
+            {:broadcast, beb, peer_pl_list} ->
                 peer_data = for {peer, _} <- peer_pl_list, do: {peer, {0,0}}
-                broadcast(peer_data, max_messages, cur_time() + timeout, my_num, pl)
+                broadcast(peer_data, max_messages, cur_time() + timeout, my_num, beb)
         end
     end
 
-    defp broadcast(peer_data, broadcasts_left, end_time, my_num, pl) do
+    defp broadcast(peer_data, broadcasts_left, end_time, my_num, beb) do
         cond do
             cur_time() >= end_time ->
                 stop_broadcasting(my_num, peer_data)
             broadcasts_left > 0 ->
                 receive do
-                    {:pl_deliver, peer_from} ->
+                    {:beb_deliver, peer_from} ->
                         peer_data = receive_broadcast(peer_from, peer_data)
-                        broadcast(peer_data, broadcasts_left, end_time, my_num, pl)
+                        broadcast(peer_data, broadcasts_left, end_time, my_num, beb)
                 after
                     # Incase nothing to be received
                     0 ->
-                        peer_data = send_broadcast(peer_data, pl)
-                        broadcast(peer_data, broadcasts_left - 1, end_time, my_num, pl)
+                        send beb, {:beb_broadcast}
+                        peer_data = send_broadcast(peer_data)
+                        broadcast(peer_data, broadcasts_left - 1, end_time, my_num, beb)
                 end
             true ->
                 receive do
-                    {:pl_deliver, peer_from} ->
+                    {:beb_deliver, peer_from} ->
                         peer_data = receive_broadcast(peer_from, peer_data)
-                        broadcast(peer_data, broadcasts_left, end_time, my_num, pl)
+                        broadcast(peer_data, broadcasts_left, end_time, my_num, beb)
                 after
                     # Recursive call to recheck timeout
-                    0 -> broadcast(peer_data, broadcasts_left, end_time, my_num, pl)
+                    0 -> broadcast(peer_data, broadcasts_left, end_time, my_num, beb)
                 end
         end
     end
@@ -45,9 +46,8 @@ defmodule App do
         IO.puts str
     end
 
-    defp send_broadcast(peer_data, pl) do
+    defp send_broadcast(peer_data) do
         for {peer, {num_sent, num_received}} <- peer_data do
-            send pl, {:pl_send, peer}
             {peer, {num_sent + 1, num_received}}
         end
     end
