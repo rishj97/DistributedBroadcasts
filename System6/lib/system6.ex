@@ -1,5 +1,5 @@
 # Rishabh Jain(rj2315)
-defmodule System5 do
+defmodule System6 do
 def main() do
     IO.puts ["PL broadcast at ", DNS.my_ip_addr()]
     peer_list = for n <- 0..4 do
