@@ -6,8 +6,10 @@ def start(num, system, max_messages, timeout, reliability, ttl) do
 
     IO.puts ["      Peer at ", DNS.my_ip_addr()]
     app = spawn(App, :start, [num, max_messages, timeout])
-    beb = spawn(BEB, :start, [app])
-    pl = spawn(LPL, :start, [self(), beb, reliability])
+    rb = spawn(RB, :start, [self(), app])
+    beb = spawn(BEB, :start, [self(), rb])
+    pl = spawn(LPL, :start, [beb, reliability])
+
     send system, {:pl, self(), pl}
     kill_peer_after(ttl, app, beb, pl)
 end

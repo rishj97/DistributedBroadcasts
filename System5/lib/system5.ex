@@ -4,7 +4,7 @@ def main() do
     IO.puts ["PL broadcast at ", DNS.my_ip_addr()]
     peer_list = for n <- 0..4 do
         ttl = cond do
-            n == 3 -> 5
+            n == 3 -> 100
             true -> :infinity
         end
         spawn(Peer, :start, [n, self(), 1000, 4000, 100, ttl])

@@ -2,30 +2,25 @@
 
 defmodule BEB do
 
-def start(app) do
+def start(peer, rb) do
     IO.puts ["      BEB at ", DNS.my_ip_addr()]
     receive do
         {:broadcast, pl, peer_pl_list} ->
-            send app, {:broadcast, self(), peer_pl_list}
-            start_listening(pl, app, peer_pl_list, [], 0)
+            send rb, {:broadcast, self(), peer_pl_list}
+            start_listening(peer, pl, rb, peer_pl_list)
     end
 end
 
-defp start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no) do
+defp start_listening(peer, pl, rb, peer_pl_list) do
     receive do
-        {:beb_broadcast} ->
-            for {peer, _} <- peer_pl_list do
-                send pl, {:pl_send, peer, cur_seq_no}
+        {:beb_broadcast, peer_from, seq_no} ->
+            for {peer_to, _} <- peer_pl_list do
+                send pl, {:pl_send, peer_from, peer_to, seq_no}
             end
-            start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no + 1)
+            start_listening(peer, pl, rb, peer_pl_list)
         {:pl_deliver, peer_from, seq_no} ->
-            cond do
-                Enum.member?(received_msgs, {peer_from, seq_no}) ->
-                    start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no)
-                true ->
-                    send app, {:beb_deliver, peer_from}
-                    start_listening(pl, app, peer_pl_list, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
-            end
+            send rb, {:beb_deliver, peer_from, seq_no}
+            start_listening(peer, pl, rb, peer_pl_list)
     end
 end
 
