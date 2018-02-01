@@ -5,23 +5,23 @@ defmodule PL do
         receive do
             {:broadcast, peer_pl_list} ->
                 send app, {:broadcast, self(), peer_pl_list}
-                start_listening(peer, peer_pl_list, app, [], 0)
+                next(peer, peer_pl_list, app, [], 0)
         end
     end
 
-    defp start_listening(peer, peer_pl_list, app, received_msgs, cur_seq_no) do
+    defp next(peer, peer_pl_list, app, received_msgs, cur_seq_no) do
         receive do
             {:pl_send, peer_to, msg} ->
                 {_, pl} = List.keyfind(peer_pl_list, peer_to, 0, nil)
                 send pl, { :pl_deliver, peer, cur_seq_no, msg }
-                start_listening(peer, peer_pl_list, app, received_msgs, cur_seq_no + 1)
+                next(peer, peer_pl_list, app, received_msgs, cur_seq_no + 1)
             {:pl_deliver, peer_from, seq_no, msg} ->
                 cond do
                     Enum.member?(received_msgs, {peer_from, seq_no}) ->
-                        start_listening(peer, peer_pl_list, app, received_msgs, cur_seq_no)
+                        next(peer, peer_pl_list, app, received_msgs, cur_seq_no)
                     true ->
                         send app, {:pl_deliver, peer_from, msg}
-                        start_listening(peer, peer_pl_list, app, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
+                        next(peer, peer_pl_list, app, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
                 end
         end
     end

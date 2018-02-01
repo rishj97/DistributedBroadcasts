@@ -21,7 +21,7 @@ defmodule App do
                 after
                     # Incase nothing to be received
                     0 ->
-                        send rb, {:rb_broadcast, broadcast_msg}
+                        send rb, {:rb_broadcast, :broadcast_msg}
                         peer_data = send_broadcast(peer_data)
                         broadcast(peer_data, broadcasts_left - 1, end_time, my_num, rb)
                 end

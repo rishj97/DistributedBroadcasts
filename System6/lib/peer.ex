@@ -8,7 +8,7 @@ def start(num, system, max_messages, timeout, reliability, ttl) do
     app = spawn(App, :start, [num, max_messages, timeout])
     rb = spawn(RB, :start, [self(), app])
     beb = spawn(BEB, :start, [self(), rb])
-    pl = spawn(LPL, :start, [beb, reliability])
+    pl = spawn(LPL, :start, [self(), beb, reliability])
 
     send system, {:pl, self(), pl}
     kill_peer_after(ttl, app, beb, pl)

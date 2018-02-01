@@ -7,11 +7,11 @@ def start(app) do
     receive do
         {:broadcast, pl, peer_pl_list} ->
             send app, {:broadcast, self(), peer_pl_list}
-            start_listening(pl, app, peer_pl_list)
+            next(pl, app, peer_pl_list)
     end
 end
 
-defp start_listening(pl, app, peer_pl_list) do
+defp next(pl, app, peer_pl_list) do
     receive do
         {:beb_broadcast, msg} ->
             for {peer, _} <- peer_pl_list do
@@ -20,7 +20,7 @@ defp start_listening(pl, app, peer_pl_list) do
         {:pl_deliver, peer_from, msg} ->
             send app, {:beb_deliver, peer_from, msg}
     end
-    start_listening(pl, app, peer_pl_list)
+    next(pl, app, peer_pl_list)
 end
 
 end # module -----------------------
