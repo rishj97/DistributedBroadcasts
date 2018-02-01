@@ -10,7 +10,7 @@ PROJECT  = da347
 NETWORK  = $(PROJECT)_network
 
 LOCAL	 = mix run --no-halt -e $(MAIN) $(PEERS)
-COMPOSE  = MAIN=$(MAIN) PEERS=$(PEERS) docker-compose -p $(PROJECT)
+COMPOSE  = MAIN=$(MAIN_NET) PEERS=$(PEERS) docker-compose -p $(PROJECT)
 
 compile:
 	mix compile

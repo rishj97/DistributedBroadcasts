@@ -18,7 +18,7 @@ services:
   system.localdomain:
     container_name: system
     command: >
-      elixir --name flooding@flooding.localdomain --cookie pass
+      elixir --name broadcast@broadcast.localdomain --cookie pass
              -S mix run --no-halt -e ${MAIN} ${PEERS}
     <<: *defaults
 
