@@ -19,11 +19,10 @@ end
 
 def main_net() do
     IO.puts ["Eager Reliable Broadcast at ", DNS.my_ip_addr()]
-    IO.puts "STARTING NOW!!!!"
 
     peer_list = for n <- 0..9 do
-        DAC.node_spawn("peer", n, Peer, :start, [n, self(), 1000, 4000, 50, :infinity])
-        # DAC.node_spawn("peer", n, Peer, :start, [])
+        Process.sleep(1000)
+        DAC.node_spawn("peer", n, Peer, :start, [n, self(), 1000, 100000, 50, :infinity])
     end
     peer_pl_list = for _ <- peer_list do
         receive do

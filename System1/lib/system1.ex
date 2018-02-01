@@ -8,7 +8,7 @@ def main() do
   end
 
   for peer <- peer_list do
-    send peer, {:broadcast, 1000, 3000}
+    send peer, {:broadcast, 1000, 1000}
   end
 
 end
