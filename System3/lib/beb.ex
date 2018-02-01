@@ -1,4 +1,4 @@
-# Rishabh Jain(rj2315)
+# Rishabh Jain(rj2315) and Vinamra Agrawal(va1215)
 
 defmodule BEB do
 
@@ -7,26 +7,20 @@ def start(app) do
     receive do
         {:broadcast, pl, peer_pl_list} ->
             send app, {:broadcast, self(), peer_pl_list}
-            start_listening(pl, app, peer_pl_list, [], 0)
+            start_listening(pl, app, peer_pl_list)
     end
 end
 
-defp start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no) do
+defp start_listening(pl, app, peer_pl_list) do
     receive do
-        {:beb_broadcast} ->
+        {:beb_broadcast, msg} ->
             for {peer, _} <- peer_pl_list do
-                send pl, {:pl_send, peer, cur_seq_no}
+                send pl, {:pl_send, peer, msg}
             end
-            start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no + 1)
-        {:pl_deliver, peer_from, seq_no} ->
-            cond do
-                Enum.member?(received_msgs, {peer_from, seq_no}) ->
-                    start_listening(pl, app, peer_pl_list, received_msgs, cur_seq_no)
-                true ->
-                    send app, {:beb_deliver, peer_from}
-                    start_listening(pl, app, peer_pl_list, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
-            end
+        {:pl_deliver, peer_from, msg} ->
+            send app, {:beb_deliver, peer_from, msg}
     end
+    start_listening(pl, app, peer_pl_list)
 end
 
 end # module -----------------------

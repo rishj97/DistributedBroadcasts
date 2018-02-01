@@ -1,4 +1,4 @@
-# Rishabh Jain(rj2315)
+# Rishabh Jain(rj2315) and Vinamra Agrawal(va1215)
 defmodule System3 do
 def main() do
   IO.puts ["PL broadcast at ", DNS.my_ip_addr()]

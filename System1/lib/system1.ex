@@ -1,4 +1,4 @@
-# Rishabh Jain(rj2315)
+# Rishabh Jain(rj2315) and Vinamra Agrawal(va1215)
 defmodule System1 do
 def main() do
   IO.puts ["System at ", DNS.my_ip_addr()]

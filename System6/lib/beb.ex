@@ -1,4 +1,4 @@
-# Rishabh Jain(rj2315)
+# Rishabh Jain(rj2315) and Vinamra Agrawal(va1215)
 
 defmodule BEB do
 

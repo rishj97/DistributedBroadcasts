@@ -1,4 +1,4 @@
-# Rishabh Jain(rj2315)
+# Rishabh Jain(rj2315) and Vinamra Agrawal(va1215)
 defmodule App do
     def start(my_num, max_messages, timeout) do
         IO.puts ["      App at ", DNS.my_ip_addr()]
@@ -15,19 +15,19 @@ defmodule App do
                 stop_broadcasting(my_num, peer_data)
             broadcasts_left > 0 ->
                 receive do
-                    {:beb_deliver, peer_from} ->
+                    {:beb_deliver, peer_from, :broadcast_msg} ->
                         peer_data = receive_broadcast(peer_from, peer_data)
                         broadcast(peer_data, broadcasts_left, end_time, my_num, beb)
                 after
                     # Incase nothing to be received
                     0 ->
-                        send beb, {:beb_broadcast}
+                        send beb, {:beb_broadcast, :broadcast_msg}
                         peer_data = send_broadcast(peer_data)
                         broadcast(peer_data, broadcasts_left - 1, end_time, my_num, beb)
                 end
             true ->
                 receive do
-                    {:beb_deliver, peer_from} ->
+                    {:beb_deliver, peer_from, :broadcast_msg} ->
                         peer_data = receive_broadcast(peer_from, peer_data)
                         broadcast(peer_data, broadcasts_left, end_time, my_num, beb)
                 after
