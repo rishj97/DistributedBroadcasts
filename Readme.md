@@ -4,7 +4,7 @@ To run the system simply run:
 make run
 ```
 OR
- ```
-    make up
+```
+make up
 ```
 inside the corresponding folder for the system.
