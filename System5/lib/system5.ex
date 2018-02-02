@@ -19,7 +19,6 @@ defp init_system(env) do
             :local ->
                 spawn(Peer, :start, [n, self(), 1000, 4000, 50, ttl])
             :docker ->
-                Process.sleep(1000)
                 DAC.node_spawn("peer", n, Peer, :start, [n, self(), 10, 10000, 50, ttl])
         end
     end
