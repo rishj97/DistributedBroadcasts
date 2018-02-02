@@ -21,6 +21,18 @@ services:
       elixir --name broadcast@broadcast.localdomain --cookie pass
              -S mix run --no-halt -e ${MAIN} ${PEERS}
     <<: *defaults
+    depends_on:
+        - peer0.localdomain
+        - peer1.localdomain
+        - peer2.localdomain
+        - peer3.localdomain
+        - peer4.localdomain
+        - peer5.localdomain
+        - peer6.localdomain
+        - peer7.localdomain
+        - peer8.localdomain
+        - peer9.localdomain
+
 
   peer0.localdomain:
     container_name: peer0
