@@ -17,7 +17,6 @@ defp init_system(env) do
             :docker ->
                 DAC.node_spawn("peer", n, Peer, :start, [n, self(), 10, 10000, 50, :infinity])
         end
-        # spawn(Peer, :start, [n, self(), 1000, 4000, 50, :infinity])
     end
     peer_pl_list = for _ <- peer_list do
         receive do
