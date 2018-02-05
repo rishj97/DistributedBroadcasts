@@ -34,6 +34,7 @@ defp broadcast(peer_data, broadcasts_left, end_time, my_num) do
                     broadcast(peer_data, broadcasts_left - 1, end_time, my_num)
             end
         true ->
+            # Keep listening until timeout
             receive do
                 {:broadcast_msg, peer_from} ->
                     peer_data = receive_broadcast(peer_from, peer_data)

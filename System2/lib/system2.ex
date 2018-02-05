@@ -10,7 +10,9 @@ end
 
 defp init_system(env) do
     IO.puts ["PL broadcast at ", DNS.my_ip_addr()]
-    peer_list = for n <- 0..9 do
+
+    # Spawn peers according to environment and create peer list
+    peer_list = for n <- 0..4 do
         case env do
             :local ->
                 spawn(Peer, :start, [n, self(), 1000, 10000])
