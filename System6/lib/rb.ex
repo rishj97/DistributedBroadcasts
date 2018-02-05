@@ -11,6 +11,8 @@ def start(peer, app) do
     end
 end
 
+# In this case, the rb module takes careof sequence number generation and not
+# the pl
 defp next(peer, app, beb, received_msgs, cur_seq_no) do
     receive do
         {:rb_broadcast, msg} ->
@@ -19,9 +21,11 @@ defp next(peer, app, beb, received_msgs, cur_seq_no) do
         {:beb_deliver, peer_from, seq_no, msg} ->
             cond do
                 Enum.member?(received_msgs, {peer_from, seq_no}) ->
+                    # Check if message already received.
                     next(peer, app, beb, received_msgs, cur_seq_no)
                 true ->
                     send app, {:rb_deliver, peer_from, msg}
+                    # Re-broadcasting new message with the same sequence number
                     send beb, {:beb_broadcast, peer_from, seq_no, msg}
                     next(peer, app, beb, received_msgs ++ [{peer_from, seq_no}], cur_seq_no)
             end

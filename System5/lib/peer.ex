@@ -9,10 +9,6 @@ def start(num, system, max_messages, timeout, reliability) do
     beb = spawn(BEB, :start, [app])
     pl = spawn(LPL, :start, [self(), beb, reliability])
     send system, {:pl, self(), pl}
-    kill_peer_after(app, beb, pl)
-end
-
-defp kill_peer_after(app, beb, pl) do
     receive do
         {:kill_peer} ->
             Process.exit(beb, :kill)

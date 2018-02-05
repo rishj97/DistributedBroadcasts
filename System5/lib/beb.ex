@@ -14,6 +14,7 @@ end
 defp next(pl, app, peer_pl_list) do
     receive do
         {:beb_broadcast, msg} ->
+            # Broadcast message received from app to all known peers
             for {peer, _} <- peer_pl_list do
                 send pl, {:pl_send, peer, msg}
             end

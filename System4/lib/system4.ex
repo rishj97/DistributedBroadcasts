@@ -10,12 +10,14 @@ end
 
 defp init_system(env) do
     IO.puts ["BEB broadcast at ", DNS.my_ip_addr()]
-    peer_list = for n <- 0..9 do
+    reliability = 50
+    # Spawn peers according to environment and create peer list
+    peer_list = for n <- 0..4 do
         case env do
             :local ->
-                spawn(Peer, :start, [n, self(), 1000, 10000, 50])
+                spawn(Peer, :start, [n, self(), 1000, 10000, reliability])
             :docker ->
-                DAC.node_spawn("peer", n, Peer, :start, [n, self(), 10, 10000, 50])
+                DAC.node_spawn("peer", n, Peer, :start, [n, self(), 10, 10000, reliability])
         end
     end
 

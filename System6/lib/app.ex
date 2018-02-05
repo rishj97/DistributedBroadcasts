@@ -21,8 +21,7 @@ defp broadcast(peer, peer_data, broadcasts_left, end_time, my_num, rb) do
             after
                 # Incase nothing to be received
                 0 ->
-                    send rb, {:rb_broadcast, :broadcast_msg}
-                    peer_data = send_broadcast(peer_data)
+                    peer_data = send_broadcast(rb, peer_data)
                     broadcast(peer, peer_data, broadcasts_left - 1, end_time, my_num, rb)
             end
         true ->
@@ -42,18 +41,13 @@ defp stop_broadcasting(peer, num, peer_data) do
     str = for {_, stats} <- peer_data do
         " #{inspect(stats)}"
     end
-    cond do
-        num == 3 ->
-            str = ["Killing peer - #{num}:"] ++ str
-            IO.puts str
-            send peer, {:kill_peer}
-        true ->
-            str = ["#{num}:"] ++ str
-            IO.puts str
-    end
+    str = ["#{num}:"] ++ str
+    IO.puts str
+    send peer, {:kill_peer}
 end
 
-defp send_broadcast(peer_data) do
+defp send_broadcast(rb, peer_data) do
+    send rb, {:rb_broadcast, :broadcast_msg}
     for {peer, {num_sent, num_received}} <- peer_data do
         {peer, {num_sent + 1, num_received}}
     end

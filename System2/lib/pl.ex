@@ -18,6 +18,7 @@ defp next(peer, peer_pl_list, app, received_msgs, cur_seq_no) do
         {:pl_deliver, peer_from, seq_no, msg} ->
             cond do
                 Enum.member?(received_msgs, {peer_from, seq_no}) ->
+                    # If message already received
                     next(peer, peer_pl_list, app, received_msgs, cur_seq_no)
                 true ->
                     send app, {:pl_deliver, peer_from, msg}

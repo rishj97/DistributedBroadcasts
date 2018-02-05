@@ -21,8 +21,7 @@ defp broadcast(peer_data, broadcasts_left, end_time, my_num, beb) do
             after
                 # Incase nothing to be received
                 0 ->
-                    send beb, {:beb_broadcast, :broadcast_msg}
-                    peer_data = send_broadcast(peer_data)
+                    peer_data = send_broadcast(beb, peer_data)
                     broadcast(peer_data, broadcasts_left - 1, end_time, my_num, beb)
             end
         true ->
@@ -46,7 +45,8 @@ defp stop_broadcasting(num, peer_data) do
     IO.puts str
 end
 
-defp send_broadcast(peer_data) do
+defp send_broadcast(beb, peer_data) do
+    send beb, {:beb_broadcast, :broadcast_msg}
     for {peer, {num_sent, num_received}} <- peer_data do
         {peer, {num_sent + 1, num_received}}
     end

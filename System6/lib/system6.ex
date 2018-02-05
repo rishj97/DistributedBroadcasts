@@ -11,15 +11,15 @@ end
 defp init_system(env) do
     IO.puts ["Eager Reliable Broadcast at ", DNS.my_ip_addr()]
     peer_list = for n <- 0..4 do
-        ttl = cond do
+        timeout = cond do
             n == 3 -> 200
             true -> 3000
         end
         case env do
             :local ->
-                spawn(Peer, :start, [n, self(), 1000, ttl, 100])
+                spawn(Peer, :start, [n, self(), 1000, timeout, 100])
             :docker ->
-                DAC.node_spawn("peer", n, Peer, :start, [n, self(), 1000, ttl, 100])
+                DAC.node_spawn("peer", n, Peer, :start, [n, self(), 1000, timeout, 100])
         end
     end
     peer_pl_list = for _ <- peer_list do
