@@ -3,8 +3,8 @@
 # Makefile, v1
 
 PEERS    = 10
-MAIN     = System6.main
-MAIN_NET = System6.main_net
+MAIN     = System7.main
+MAIN_NET = System7.main_net
 
 PROJECT  = da347
 NETWORK  = $(PROJECT)_network

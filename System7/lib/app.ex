@@ -45,7 +45,7 @@ defp stop_broadcasting(peer, num, peer_data) do
     IO.puts str
 
     # Since app is linked with peer, peer gets killed automatically
-    Process.exit(self(), :kill)
+    send peer, {:kill_peer}
 end
 
 defp send_broadcast(rb, peer_data) do
