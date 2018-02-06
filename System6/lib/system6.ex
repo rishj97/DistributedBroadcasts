@@ -13,8 +13,8 @@ defp init_system(env) do
     reliability = 100
     peer_list = for n <- 0..4 do
         timeout = cond do
-            n == 3 -> 200
-            true -> 3000
+            n == 3 -> 4
+            true -> 4000
         end
         case env do
             :local ->

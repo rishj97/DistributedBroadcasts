@@ -9,7 +9,6 @@ def start(peer, app) do
             send app, {:broadcast, self(), peer_pl_list}
             peers = Enum.map(peer_pl_list, fn {p, _} -> p end)
             peer_msgs = Map.new(peers, fn p -> {p, MapSet.new()} end)
-
             next(peer, app, beb, peer_msgs, MapSet.new(peers), 0)
     end
 end

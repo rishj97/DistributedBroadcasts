@@ -20,11 +20,11 @@ defp next(peer, peer_pl_list, beb, reliability) do
                 true ->
                     nil
             end
-            next(peer, peer_pl_list, beb, reliability)
         {:pl_deliver, peer_from, msg} ->
-            # Check if message already delivered or not here
+            # Since we're checking for duplicate messages in RB already,
+            # we don't need to check again here.
             send beb, {:pl_deliver, peer_from, msg}
-            next(peer, peer_pl_list, beb, reliability)
     end
+    next(peer, peer_pl_list, beb, reliability)
 end
 end # module -----------------------

@@ -18,11 +18,10 @@ defp next(peer, pl, rb, peer_pl_list) do
             for {peer_to, _} <- peer_pl_list do
                 send pl, {:pl_send, peer_to, msg}
             end
-            next(peer, pl, rb, peer_pl_list)
         {:pl_deliver, peer_from, msg} ->
             send rb, {:beb_deliver, peer_from, msg}
-            next(peer, pl, rb, peer_pl_list)
     end
+    next(peer, pl, rb, peer_pl_list)
 end
 
 end # module -----------------------
