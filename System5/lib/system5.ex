@@ -12,8 +12,8 @@ defp init_system(env) do
     IO.puts ["BEB broadcast at ", DNS.my_ip_addr()]
     peer_list = for n <- 0..4 do
         timeout = cond do
-            n == 3 -> 5
-            true -> 10000
+            n == 3 -> 4
+            true -> 11000
         end
         case env do
             :local ->
