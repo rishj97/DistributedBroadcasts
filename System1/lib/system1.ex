@@ -10,7 +10,8 @@ end
 
 defp init_system(env) do
     IO.puts ["Peer broadcast at ", DNS.my_ip_addr()]
-
+    max_messages = 1000
+    timeout = 3000
     # Spawn peers according to environment and create peer list
     peer_list = for n <- 0..4 do
         case env do
@@ -26,7 +27,7 @@ defp init_system(env) do
     end
 
     for peer <- peer_list do
-        send peer, {:broadcast, 1000, 1000}
+        send peer, {:broadcast, max_messages, timeout}
     end
 end
 end # module -----------------------
